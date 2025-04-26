@@ -7,6 +7,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public class UserDAO {
 
@@ -16,6 +19,21 @@ public class UserDAO {
     @Transactional
     public void save(User user) {
         entityManager.persist(user);
+    }
+
+    @Transactional
+    public void update(User user) {
+        entityManager.merge(user);
+    }
+
+    @Transactional
+    public boolean deleteById(Long id) {
+        User user = entityManager.find(User.class, id);
+        if (user != null) {
+            entityManager.remove(user);
+            return true;
+        }
+        return false;
     }
 
     public User findByUsername(String username) {
@@ -36,6 +54,16 @@ public class UserDAO {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public Optional<User> findById(Long id) {
+        User user = entityManager.find(User.class, id);
+        return Optional.ofNullable(user);
+    }
+
+    public List<User> findAll() {
+        return entityManager.createQuery("SELECT u FROM User u ORDER BY u.username", User.class)
+                .getResultList();
     }
 
     public boolean existsByUsername(String username) {

@@ -52,10 +52,15 @@ public class UserController {
             session.setAttribute("userId", user.getId());
             session.setAttribute("userRole", user.getRole());
 
-            // Add welcome message for display on main page
+            // welcome message for display on main page
             redirectAttributes.addFlashAttribute("welcomeMessage", "Welcome, " + username + "!");
 
-            return "redirect:/main";  // Redirect to main page
+            // Redirect based on role
+            if (user.getRole() == User.Role.ADMIN) {
+                return "redirect:/books/admin/manage";  // Redirect admin to admin panel
+            } else {
+                return "redirect:/main";  // Redirect regular users to main page
+            }
         }
         model.addAttribute("error", "Invalid credentials");
         return "login";
@@ -68,4 +73,15 @@ public class UserController {
         return "redirect:/users/login";
     }
 
+    @GetMapping("/profile")
+    public String viewProfile(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return "redirect:/users/login";
+        }
+
+        User user = userService.findByUsername(username);
+        model.addAttribute("user", user);
+        return "users/profile";
+    }
 }

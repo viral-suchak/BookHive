@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.title + ' - BookHive Library'}">Book Details - BookHive Library</title>
+    <link rel="stylesheet" href="/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles for book detail page */
+        .book-detail-container {
+            display: flex;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .book-cover-large {
+            flex: 0 0 300px;
+            background-color: #e6e0d4;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book-cover-large img {
+            max-width: 100%;
+            max-height: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-details {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .book-title {
+            color: #5c3d2e;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .book-author {
+            font-size: 1.2rem;
+            color: #8b5e34;
+            margin-bottom: 1.5rem;
+        }
+
+        .book-metadata {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metadata-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .metadata-label {
+            font-weight: bold;
+            color: #5c3d2e;
+        }
+
+        .book-description {
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .availability-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .available {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .unavailable {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 768px) {
+            .book-detail-container {
+                flex-direction: column;
+            }
+
+            .book-cover-large {
+                flex: 0 0 auto;
+                height: 300px;
+                width: 100%;
+            }
+
+            .book-metadata {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <h1>Book<span>Hive</span> Library</h1>
+        <nav>
+            <ul>
+                <li><a href="/books" class="active">Browse Books</a></li>
+                <li><a href="/books/borrowed">My Borrowed Books</a></li>
+                <li><a href="/users/profile">My Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="page-header">
+        <a href="/books" class="back-link"><i class="fas fa-arrow-left"></i> Back to Books</a>
+    </section>
+
+    <section class="messages">
+        <div th:if="${message}" class="success-message" th:text="${message}"></div>
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+    </section>
+
+    <section class="book-detail">
+        <div class="book-detail-container">
+            <div class="book-cover-large">
+                <img th:src="${book.coverImageUrl != null ? book.coverImageUrl : '/api/placeholder/300/400'}"
+                     alt="Book Cover"
+                     onerror="this.src='/api/placeholder/300/400';">
+            </div>
+            <div class="book-details">
+                <h1 class="book-title" th:text="${book.title}">Book Title</h1>
+                <p class="book-author" th:text="${'by ' + book.author}">Author Name</p>
+
+                <div class="availability-badge"
+                     th:classappend="${book.availableCopies > 0 ? 'available' : 'unavailable'}">
+                    <span th:text="${book.availableCopies > 0 ? 'Available' : 'Unavailable'}"></span>
+                    <span th:text="${'(' + book.availableCopies + ' of ' + book.totalCopies + ' copies)'}"></span>
+                </div>
+
+                <div class="book-metadata">
+                    <div class="metadata-item">
+                        <span class="metadata-label">ISBN:</span> <span th:text="${book.isbn}">1234567890</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Genre:</span> <span th:text="${book.genre}">Fiction</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Publication Year:</span> <span th:text="${book.publicationYear}">2023</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Added to Library:</span> <span
+                            th:text="${#temporals.format(book.addedDate, 'MMMM dd, yyyy')}">January 1, 2023</span>
+                    </div>
+                </div>
+
+                <div class="book-description" th:text="${book.description}">
+                    Book description goes here...
+                </div>
+
+                <!-- In books/detail.html -->
+                <div class="book-actions">
+                    <!-- Only show borrow button for non-admin users -->
+                    <form th:if="${book.availableCopies > 0 && !alreadyBorrowed && session.userRole != T(com.bookhive.model.User.Role).ADMIN}"
+                          th:action="@{/books/{id}/borrow(id=${book.id})}"
+                          method="post">
+                        <button type="submit" class="button">Borrow This Book</button>
+                    </form>
+
+                    <!-- Show message for admins -->
+                    <span th:if="${session.userRole == T(com.bookhive.model.User.Role).ADMIN}" class="admin-message">
+                         <i class="fas fa-info-circle"></i> Administrators cannot borrow books
+                    </span>
+
+                    <span th:if="${book.availableCopies == 0}" class="unavailable-message">
+                         <i class="fas fa-exclamation-circle"></i> Currently unavailable for borrowing
+                    </span>
+
+                    <span th:if="${alreadyBorrowed}" class="already-borrowed-message">
+                        <i class="fas fa-check-circle"></i> You already have this book borrowed
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="simple-footer">
+        <div class="footer-brand">
+            <h3>Book<span>Hive</span> Library</h3>
+            <p>Your digital library management system</p>
+        </div>
+        <div class="footer-nav">
+            <a href="/main">Home</a>
+            <a href="/books">Browse Books</a>
+            <a href="/books/borrowed">My Books</a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 BookHive Library System</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

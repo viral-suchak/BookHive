@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book - BookHive Library</title>
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <h1>Book<span>Hive</span> Library</h1>
+        <nav>
+            <ul>
+                <li><a href="/admin">Admin Dashboard</a></li>
+                <li><a href="/books/admin/manage">Manage Books</a></li>
+                <li><a href="/admin/users">Manage Users</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="admin-container">
+
+    <div class="admin-content">
+        <div class="admin-header">
+            <div class="admin-title">
+                <i class="fas fa-edit"></i>
+                <h2>Edit Book</h2>
+            </div>
+        </div>
+
+        <section class="messages">
+            <div th:if="${message}" class="success-message" th:text="${message}"></div>
+            <div th:if="${error}" class="error-message" th:text="${error}"></div>
+        </section>
+
+        <section class="admin-section">
+            <h3 class="admin-section-title">Edit Book Details</h3>
+
+            <form th:action="@{/books/admin/edit/{id}(id=${book.id})}" th:object="${book}" method="post" class="admin-form">
+                <div class="admin-form-row">
+                    <div class="admin-form-group">
+                        <label for="title">Book Title*</label>
+                        <input type="text" id="title" th:field="*{title}" required />
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="author">Author*</label>
+                        <input type="text" id="author" th:field="*{author}" required />
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="isbn">ISBN*</label>
+                        <input type="text" id="isbn" th:field="*{isbn}" required />
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="genre">Genre*</label>
+                        <input type="text" id="genre" th:field="*{genre}" required />
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="publicationYear">Publication Year</label>
+                        <input type="number" id="publicationYear" th:field="*{publicationYear}" min="1000" max="2099" />
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="totalCopies">Total Copies*</label>
+                        <input type="number" id="totalCopies" th:field="*{totalCopies}" required min="1" />
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="availableCopies">Available Copies*</label>
+                        <input type="number" id="availableCopies" th:field="*{availableCopies}" required min="0" th:max="*{totalCopies}" />
+                    </div>
+
+                    <div class="admin-form-group">
+                        <label for="coverImageUrl">Cover Image URL</label>
+                        <input type="url" id="coverImageUrl" th:field="*{coverImageUrl}" placeholder="http://example.com/book-cover.jpg" />
+                    </div>
+
+                    <div class="admin-form-group full">
+                        <label for="description">Book Description</label>
+                        <textarea id="description" th:field="*{description}" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="admin-form-actions">
+                    <a href="/books/admin/manage" class="admin-btn admin-btn-secondary">Cancel</a>
+                    <button type="submit" class="admin-btn">Save Changes</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+<footer>
+    <div class="simple-footer">
+        <div class="footer-brand">
+            <h3>Book<span>Hive</span> Library</h3>
+            <p>Your digital library management system</p>
+        </div>
+        <div class="footer-nav">
+            <a href="/books/admin/manage">Manage Books</a>
+            <a href="/admin/users">Manage Users</a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 BookHive Library System</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

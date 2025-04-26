@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Borrowed Books - BookHive Library</title>
+    <link rel="stylesheet" href="/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <a href="/main" class="logo-link">
+            <h1>Book<span>Hive</span> Library</h1>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="/books">Browse Books</a></li>
+                <li><a href="/books/borrowed" class="active">My Borrowed Books</a></li>
+                <li><a href="/users/profile">My Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="page-header">
+        <h2>My Borrowed Books</h2>
+        <p>Manage your current book loans</p>
+    </section>
+
+    <section class="messages">
+        <div th:if="${message}" class="success-message" th:text="${message}"></div>
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+    </section>
+
+    <section class="borrowed-books">
+        <div class="borrowed-books-container">
+            <div th:if="${borrowings.isEmpty()}" class="empty-list-message">
+                <h3>You don't have any borrowed books</h3>
+                <p>Browse our collection and borrow some books to get started!</p>
+                <a href="/books" class="button">Browse Books</a>
+            </div>
+
+            <div th:if="${!borrowings.isEmpty()}" class="borrowed-books-list">
+                <div class="borrowed-book" th:each="borrowing : ${borrowings}">
+                    <div class="borrowed-book-details">
+                        <h3 class="borrowed-book-title" th:text="${borrowing.book.title}">Book Title</h3>
+                        <p class="borrowed-book-author" th:text="${'by ' + borrowing.book.author}">Author Name</p>
+
+                        <p>Borrow Date: <span th:text="${#temporals.format(borrowing.borrowDate, 'MMMM dd, yyyy')}">January 1, 2023</span></p>
+                        <p>Due Date: <span th:text="${#temporals.format(borrowing.dueDate, 'MMMM dd, yyyy')}">January 15, 2023</span></p>
+                        <p>Status: <span th:text="${borrowing.status}">ACTIVE</span></p>
+
+                        <div class="borrowed-book-actions">
+                            <a th:href="@{/books/{id}(id=${borrowing.book.id})}" class="button">View Book</a>
+                            <form th:action="@{/books/return/{id}(id=${borrowing.id})}" method="post" style="display: inline;">
+                                <button type="submit" class="button">Return Book</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="simple-footer">
+        <div class="footer-brand">
+            <h3>Book<span>Hive</span> Library</h3>
+            <p>Your digital library management system</p>
+        </div>
+        <div class="footer-nav">
+            <a href="/main">Home</a>
+            <a href="/books">Browse Books</a>
+            <a href="/books/borrowed">My Books</a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 BookHive Library System</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

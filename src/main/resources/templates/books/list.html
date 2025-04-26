@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Books - BookHive Library</title>
+    <link rel="stylesheet" href="/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <a href="/main" class="logo-link">
+            <h1>Book<span>Hive</span> Library</h1>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="/books" class="active">Browse Books</a></li>
+                <li><a href="/books/borrowed">My Borrowed Books</a></li>
+                <li><a href="/users/profile">My Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="page-header">
+        <h2>Browse Our Collection</h2>
+        <p>Discover your next great read from our extensive library</p>
+    </section>
+
+    <section class="search-filter-section">
+        <div class="search-filter-container">
+            <div class="search-box">
+                <form action="/books" method="get">
+                    <input type="text" name="search" placeholder="Search by title, author, or ISBN..." th:value="${searchQuery}">
+                    <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+
+            <div class="filter-box">
+                <form action="/books" method="get" id="genreForm">
+                    <select name="genre" id="genreSelect" onchange="document.getElementById('genreForm').submit();">
+                        <option value="">All Genres</option>
+                        <option th:each="g : ${genres}"
+                                th:value="${g}"
+                                th:text="${g}"
+                                th:selected="${g == selectedGenre}"></option>
+                    </select>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="messages">
+        <div th:if="${message}" class="success-message" th:text="${message}"></div>
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+    </section>
+
+    <section class="books-grid">
+        <div th:if="${books.isEmpty()}" class="no-books-message">
+            <p>No books found matching your criteria.</p>
+            <a href="/books" class="button">View All Books</a>
+        </div>
+
+<!--        <div class="books-container">-->
+<!--            <div class="book-card" th:each="book : ${books}">-->
+<!--                <div class="book-cover">-->
+<!--                    <img th:src="${book.coverImageUrl != null ? book.coverImageUrl : '/api/placeholder/200/300'}"-->
+<!--                         alt="Book Cover"-->
+<!--                         onerror="this.src='/api/placeholder/200/300';">-->
+<!--                </div>-->
+<!--                <div class="book-info">-->
+<!--                    <h3 th:text="${book.title}">Book Title</h3>-->
+<!--                    <p class="author" th:text="${'by ' + book.author}">Author Name</p>-->
+<!--                    <p class="genre" th:text="${book.genre}">Genre</p>-->
+<!--                    <div class="availability" th:classappend="${book.availableCopies > 0 ? 'available' : 'unavailable'}">-->
+<!--                        <span th:text="${book.availableCopies > 0 ? 'Available' : 'Unavailable'}"></span>-->
+<!--                        <span th:text="${'(' + book.availableCopies + ' of ' + book.totalCopies + ')'}"></span>-->
+<!--                    </div>-->
+<!--                    <a th:href="@{/books/{id}(id=${book.id})}" class="button">View Details</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="books-container">
+            <div class="book-card" th:each="book : ${books}">
+                <div class="book-cover">
+                    <img th:src="${book.coverImageUrl != null ? book.coverImageUrl : '/api/placeholder/150/225'}"
+                         alt="Book Cover"
+                         onerror="this.src='/api/placeholder/150/225';">
+                </div>
+                <div class="book-info">
+                    <h3 th:text="${book.title}">Book Title</h3>
+                    <p class="author" th:text="${'by ' + book.author}">Author Name</p>
+                    <p class="genre" th:text="${book.genre}">Genre</p>
+                    <div class="availability" th:classappend="${book.availableCopies > 0 ? 'available' : 'unavailable'}">
+                        <span th:text="${book.availableCopies > 0 ? 'Available' : 'Unavailable'}"></span>
+                        <span th:text="${'(' + book.availableCopies + ' of ' + book.totalCopies + ')'}"></span>
+                    </div>
+                    <a th:href="@{/books/{id}(id=${book.id})}" class="button">View Details</a>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Pagination -->
+    <!-- Pagination section -->
+    <section class="pagination" th:if="${totalPages > 1}">
+        <div class="pagination-container">
+            <a th:if="${currentPage > 1}" th:href="@{/books(page=${currentPage - 1}, genre=${selectedGenre})}" class="pagination-item">&laquo; Previous</a>
+
+            <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <a th:if="${i != currentPage}" th:href="@{/books(page=${i}, genre=${selectedGenre})}" class="pagination-item" th:text="${i}"></a>
+            <span th:if="${i == currentPage}" class="pagination-item active" th:text="${i}"></span>
+        </span>
+
+            <a th:if="${currentPage < totalPages}" th:href="@{/books(page=${currentPage + 1}, genre=${selectedGenre})}" class="pagination-item">Next &raquo;</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="simple-footer">
+        <div class="footer-brand">
+            <h3>Book<span>Hive</span> Library</h3>
+            <p>Your digital library management system</p>
+        </div>
+        <div class="footer-nav">
+            <a href="/main">Home</a>
+            <a href="/books">Browse Books</a>
+            <a href="/books/borrowed">My Books</a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 BookHive Library System</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

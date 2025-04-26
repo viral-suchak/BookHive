@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BookHive Library</title>
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <h1>Book<span>Hive</span> Library</h1>
+        <nav>
+            <ul>
+                <li><a href="/admin">Admin Dashboard</a></li>
+                <li><a href="/books/admin/manage">Manage Books</a></li>
+                <li><a href="/admin/users">Manage Users</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="admin-container">
+
+    <div class="admin-content">
+        <div class="admin-header">
+            <div class="admin-title">
+                <i class="fas fa-tachometer-alt"></i>
+                <h2>Admin Dashboard</h2>
+            </div>
+            <div class="admin-header-actions">
+                <span th:text="${'Welcome, ' + username}">Welcome, Admin</span>
+            </div>
+        </div>
+
+        <section class="admin-cards">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">Total Books</h3>
+                    <div class="admin-card-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+                <div class="admin-card-value" th:text="${totalBooks}">350</div>
+                <a href="/books/admin/manage" class="admin-btn admin-btn-sm">Manage Books</a>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">Active Borrowings</h3>
+                    <div class="admin-card-icon">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                </div>
+                <div class="admin-card-value" th:text="${activeBorrowings != null ? activeBorrowings : '0'}">42</div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title">Quick Actions</h3>
+                    <div class="admin-card-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                </div>
+                <div class="admin-quick-actions">
+                    <a href="/books/admin/add" class="admin-btn admin-btn-sm">Add New Book</a>
+                    <a href="/admin/users" class="admin-btn admin-btn-sm admin-btn-secondary">Manage Users</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-section">
+            <h3 class="admin-section-title">Recently Added Books</h3>
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Added Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="book : ${recentBooks}">
+                    <td th:text="${book.title}">Book Title</td>
+                    <td th:text="${book.author}">Author Name</td>
+                    <td th:text="${book.isbn}">1234567890</td>
+                    <td th:text="${#temporals.format(book.addedDate, 'dd MMM yyyy')}">01 Apr 2025</td>
+                    <td>
+                        <a th:href="@{/books/admin/edit/{id}(id=${book.id})}" class="admin-btn admin-btn-sm admin-btn-secondary">Edit</a>
+                    </td>
+                </tr>
+                <tr th:if="${recentBooks.isEmpty()}">
+                    <td colspan="5" style="text-align: center;">No books have been added recently.</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</div>
+
+<footer>
+    <div class="simple-footer">
+        <div class="footer-brand">
+            <h3>Book<span>Hive</span> Library</h3>
+            <p>Your digital library management system</p>
+        </div>
+        <div class="footer-nav">
+            <a href="/books/admin/manage">Manage Books</a>
+            <a href="/admin/users">Manage Users</a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 BookHive Library System</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

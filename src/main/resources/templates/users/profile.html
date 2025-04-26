@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - BookHive Library</title>
+    <link rel="stylesheet" href="/home.css">
+    <link rel="stylesheet" href="/profile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="header-container">
+        <a href="/main" class="logo-link">
+            <h1>Book<span>Hive</span> Library</h1>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="/books">Browse Books</a></li>
+                <li><a href="/books/borrowed">My Borrowed Books</a></li>
+                <li><a href="/users/profile" class="active">My Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="page-header">
+        <h2>My Profile</h2>
+        <p>View and manage your account information</p>
+    </section>
+
+    <section class="messages">
+        <div th:if="${message}" class="success-message" th:text="${message}"></div>
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+    </section>
+
+    <section class="profile">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar" th:text="${user.username.substring(0,1).toUpperCase()}">
+                    U
+                </div>
+                <div class="profile-info">
+                    <h2 th:text="${user.username}">Username</h2>
+                    <span class="role-badge" th:text="${user.role}">BORROWER</span>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-item">
+                    <span class="detail-label">Email Address</span>
+                    <span class="detail-value" th:text="${user.email}">user@example.com</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Account Type</span>
+                    <span class="detail-value" th:text="${user.role == T(com.bookhive.model.User.Role).ADMIN ? 'Administrator' : 'Library Member'}">
+                        Library Member
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Member ID</span>
+                    <span class="detail-value" th:text="${'BH-' + user.id}">BH-1234</span>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <!-- These buttons would typically link to account management features -->
+                <a href="/books/borrowed" class="button">View My Borrowed Books</a>
+                <!-- These features could be implemented in future versions -->
+                <button class="button secondary" disabled>Edit Profile</button>
+                <button class="button danger" disabled>Change Password</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>About BookHive</h3>
+            <ul>
+                <li><a href="#">Our Story</a></li>
+                <li><a href="#">Library Hours</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">FAQ</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Resources</h3>
+            <ul>
+                <li><a href="#">Book Recommendations</a></li>
+                <li><a href="#">Reading Lists</a></li>
+                <li><a href="#">Book Clubs</a></li>
+                <li><a href="#">Events</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>My Account</h3>
+            <ul>
+                <li><a href="/books/borrowed">Borrowed Books</a></li>
+                <li><a href="/books/history">Reading History</a></li>
+                <li><a href="/users/profile">Profile Settings</a></li>
+                <li><a href="#">Notifications</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Connect With Us</h3>
+            <ul>
+                <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>&copy; 2025 BookHive Library Management System. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
+<body>
+<header>
+    <div class="header-container">
+        <h1>Book<span>Hive</span> Library</h1>
+        <nav>
+            <ul>
+                <li><a href="/books">Browse Books</a></li>
+                <li><a href="/books/borrowed">My Borrowed Books</a></li>
+                <li><a href="/users/profile" class="active">My Profile</a></li>
+                <li><a href="/users/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="page-header">
+        <h2>My Profile</h2>
+        <p>View and manage your account information</p>
+    </section>
+
+    <section class="messages">
+        <div th:if="${message}" class="success-message" th:text="${message}"></div>
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+    </section>
+
+    <section class="profile">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar" th:text="${user.username.substring(0,1).toUpperCase()}">
+                    U
+                </div>
+                <div class="profile-info">
+                    <h2 th:text="${user.username}">Username</h2>
+                    <span class="role-badge" th:text="${user.role}">BORROWER</span>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <div class="detail-item">
+                    <span class="detail-label">Email Address</span>
+                    <span class="detail-value" th:text="${user.email}">user@example.com</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Account Type</span>
+                    <span class="detail-value" th:text="${user.role == T(com.bookhive.model.User.Role).ADMIN ? 'Administrator' : 'Library Member'}">
+                        Library Member
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Member ID</span>
+                    <span class="detail-value" th:text="${'BH-' + user.id}">BH-1234</span>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <!-- These buttons would typically link to account management features -->
+                <a href="/books/borrowed" class="button">View My Borrowed Books</a>
+                <!-- These features could be implemented in future versions -->
+                <button class="button secondary" disabled>Edit Profile</button>
+                <button class="button danger" disabled>Change Password</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="simple-footer">
+        <div class="footer-brand">
+            <h3>Book<span>Hive</span> Library</h3>
+            <p>Your digital library management system</p>
+        </div>
+        <div class="footer-nav">
+            <a href="/main">Home</a>
+            <a href="/books">Browse Books</a>
+            <a href="/books/borrowed">My Books</a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 BookHive Library System</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
